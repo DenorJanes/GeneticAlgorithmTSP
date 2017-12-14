@@ -36,6 +36,7 @@ typedef vector<vector<double>> Distances;
 typedef vector<Chromosome> Population;
 
 string city_name(int i);
+void print_distance_matrix(const vector<string>& cities, const Distances& dist);
 void calc_fitness(Population& popul);
 void print_population(const Population& popul);
 int find_best(const Population& popul);
@@ -44,6 +45,7 @@ Population newGeneration(const Population& old_popul, const Distances& dist);
 Chromosome create_chromo(int i, const Distances& dist);
 Chromosome select_one(Population& popul);
 Chromosome crossover(const Chromosome& chromo_a, const Chromosome& chromo_b, const Distances& dist);
+Chromosome shuffle_crossover(const Chromosome& chromo_a, const Distances& dist);
 Chromosome mutate(const Chromosome& chromo, const Distances& dist);
 
 
@@ -93,26 +95,7 @@ void main()
 	for (i = 0; i < city_num; ++i) popul[i] = create_chromo(i, dist);
 	calc_fitness(popul);
 
-	cout.width(13);
-	cout << ' ';
-	for (i = 0; i < city_num; ++i)
-	{
-		cout.width(13);
-		cout << left << cities[i];
-	}
-	cout << endl;
-	for (i = 0; i < city_num; ++i)
-	{
-		cout.width(13);
-		cout << left << cities[i];
-		for (j = 0; j < city_num; ++j)
-		{
-			cout.width(13);
-			cout << dist[i][j];
-		}
-
-		cout << endl;
-	}
+	print_distance_matrix(cities, dist);
 
 	for (int k = 0; k < generation_num; ++k)
 	{
@@ -136,6 +119,32 @@ void main()
 	}
 	cout << endl;
 	system("pause");
+}
+
+void print_distance_matrix(const vector<string>& cities, const Distances& dist)
+{
+	size_t i, j , size = cities.size();
+
+	cout.width(13);
+	cout << ' ';
+	for (i = 0; i < size; ++i)
+	{
+		cout.width(13);
+		cout << left << cities[i];
+	}
+	cout << endl;
+	for (i = 0; i < size; ++i)
+	{
+		cout.width(13);
+		cout << left << cities[i];
+		for (j = 0; j < size; ++j)
+		{
+			cout.width(13);
+			cout << dist[i][j];
+		}
+
+		cout << endl;
+	}
 }
 
 void print_population(const Population& popul)
@@ -344,7 +353,7 @@ Population newGeneration(const Population& old_popul, const Distances& dist)
 	for (size_t i = 1; i < old_popul.size(); ++i)
 	{
 		Chromosome first_selected = select_one(old_popul),
-				   second_selected = select_one(old_popul);
+			second_selected = select_one(old_popul);
 
 		double choice = (double)((rand() % 100)) / 100;
 
@@ -361,7 +370,7 @@ Population newGeneration(const Population& old_popul, const Distances& dist)
 		{
 			first_selected = crossover(first_selected, second_selected, dist);
 		}
-		
+
 		newGener.push_back(first_selected);
 	}
 
